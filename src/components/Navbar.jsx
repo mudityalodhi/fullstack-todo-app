@@ -72,66 +72,64 @@ const Navbar = () => {
       </div>
 
       {/* Mobile Menu with Animation */}
-      {/* Mobile Menu with Animation */}
-<div
-  className={`md:hidden px-6 overflow-hidden transform transition-all duration-300 ease-in-out origin-top ${
-    menuOpen
-      ? "scale-y-100 opacity-100 max-h-screen"
-      : "scale-y-0 opacity-0 max-h-0"
-  }`}
->
-  <ul className="flex flex-col items-center gap-4 text-gray-700 font-medium py-4">
-    <li>
-      <Link
-        to="/"
-        className="hover:text-blue-500 transition"
-        onClick={() => setMenuOpen(false)}
+      <div
+        className={`md:hidden px-6 overflow-hidden transform transition-all duration-300 ease-in-out origin-top ${
+          menuOpen
+            ? "scale-y-100 opacity-100 max-h-screen"
+            : "scale-y-0 opacity-0 max-h-0"
+        }`}
       >
-        Home
-      </Link>
-    </li>
-    <li>
-      <Link
-        to="/about"
-        className="hover:text-blue-500 transition"
-        onClick={() => setMenuOpen(false)}
-      >
-        About Us
-      </Link>
-    </li>
-    <li>
-      <Link
-        to="/todo"
-        className="hover:text-blue-500 transition"
-        onClick={() => setMenuOpen(false)}
-      >
-        Todo
-      </Link>
-    </li>
-    <li>
-      <Link to="/sign-up" onClick={() => setMenuOpen(false)}>
-        <button className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition shadow-sm">
-          Sign Up
-        </button>
-      </Link>
-    </li>
-    <li>
-      <Link to="/login" onClick={() => setMenuOpen(false)}>
-        <button className="border border-blue-500 text-blue-500 px-4 py-2 rounded-lg hover:bg-blue-50 transition">
-          Sign In
-        </button>
-      </Link>
-    </li>
-    <li>
-      <Link to="/logout" onClick={() => setMenuOpen(false)}>
-        <button className="bg-red-400 text-white px-4 py-2 rounded-lg hover:bg-red-500 transition">
-          Log Out
-        </button>
-      </Link>
-    </li>
-  </ul>
-</div>
-
+        <ul className="flex flex-col items-center gap-4 text-gray-700 font-medium py-4">
+          <li>
+            <Link
+              to="/"
+              className="hover:text-blue-500 transition"
+              onClick={() => setMenuOpen(false)}
+            >
+              Home
+            </Link>
+          </li>
+          <li>
+            <Link
+              to="/about"
+              className="hover:text-blue-500 transition"
+              onClick={() => setMenuOpen(false)}
+            >
+              About Us
+            </Link>
+          </li>
+          <li>
+            <Link
+              to="/todo"
+              className="hover:text-blue-500 transition"
+              onClick={() => setMenuOpen(false)}
+            >
+              Todo
+            </Link>
+          </li>
+          <li>
+            <Link to="/sign-up" onClick={() => setMenuOpen(false)}>
+              <button className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition shadow-sm">
+                Sign Up
+              </button>
+            </Link>
+          </li>
+          <li>
+            <Link to="/login" onClick={() => setMenuOpen(false)}>
+              <button className="border border-blue-500 text-blue-500 px-4 py-2 rounded-lg hover:bg-blue-50 transition">
+                Sign In
+              </button>
+            </Link>
+          </li>
+          <li>
+            <Link to="/logout" onClick={() => setMenuOpen(false)}>
+              <button className="bg-red-400 text-white px-4 py-2 rounded-lg hover:bg-red-500 transition">
+                Log Out
+              </button>
+            </Link>
+          </li>
+        </ul>
+      </div>
     </nav>
   );
 };
