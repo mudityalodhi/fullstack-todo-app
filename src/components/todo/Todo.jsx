@@ -1,26 +1,38 @@
 import React, { useState } from "react";
 import TodoCards from "./TodoCards";
+import Update from "./Update";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Todo = () => {
   const [inputs, setInputs] = useState({ title: "", body: "" });
-  const [todos, setTodos] = useState([]);
+  const [todos, setTodos]   = useState([]);
   const [showBody, setShowBody] = useState(false);
-  const [editingIdx, setEditingIdx] = useState(null); // null ⇒ add‑mode
+  const [editingIdx, setEditingIdx] = useState(null); // null ⇒ add‑mode
+  const [modalOpen, setModalOpen]   = useState(false);
 
-  /* input change */
-  const handleChange = (e) =>
-    setInputs((p) => ({ ...p, [e.target.name]: e.target.value }));
+  /*---------------- handlers ----------------*/
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setInputs((p) => ({ ...p, [name]: value }));
+  };
 
-  /* add new OR save edit */
   const saveTodo = () => {
-    if (!inputs.title.trim()) return;
+    if (!inputs.title.trim()) {
+      toast.warn("Title is required");
+      return;
+    }
 
     if (editingIdx === null) {
-      setTodos((p) => [...p, inputs]); // add
+      setTodos((p) => [...p, inputs]);         // add
+      toast.success("Task added!");
+      toast.info("Note: This task isn't saved permanently. Sign Up to keep your tasks!");
     } else {
+      // (should never reach here in normal flow, updates are via modal)
       setTodos((p) =>
-        p.map((t, i) => (i === editingIdx ? inputs : t)) // update
+        p.map((t, i) => (i === editingIdx ? inputs : t))
       );
+      toast.info("Task updated!");
       setEditingIdx(null);
     }
 
@@ -28,17 +40,24 @@ const Todo = () => {
     setShowBody(false);
   };
 
-  /* edit click */
   const editTodo = (idx) => {
-    setInputs(todos[idx]);
     setEditingIdx(idx);
-    setShowBody(true);
+    setModalOpen(true);
   };
 
-  /* delete click */
-  const deleteTodo = (idx) =>
-    setTodos((p) => p.filter((_, i) => i !== idx));
+  const handleModalSave = (data) => {
+    setTodos((p) => p.map((t, i) => (i === editingIdx ? data : t)));
+    toast.info("Task updated!");
+    setEditingIdx(null);
+    setModalOpen(false);
+  };
 
+  const deleteTodo = (idx) => {
+    setTodos((p) => p.filter((_, i) => i !== idx));
+    toast.error("Task deleted!");
+  };
+
+  /*---------------- UI ----------------*/
   return (
     <div className="min-h-screen bg-green-50 flex items-center justify-center px-4">
       <div className="bg-white w-full max-w-xl rounded-xl shadow-lg p-6">
@@ -52,7 +71,7 @@ const Todo = () => {
             onFocus={() => setShowBody(true)}
             onChange={handleChange}
             placeholder="Enter task title..."
-            className="px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-green-400 outline-none"
+            className="px-4 py-2 border rounded-lg focus:ring-2 focus:ring-green-400 outline-none"
           />
 
           {showBody && (
@@ -61,7 +80,7 @@ const Todo = () => {
               value={inputs.body}
               onChange={handleChange}
               placeholder="Add details / description..."
-              className="px-4 py-2 rounded-lg border border-gray-300 h-24 resize-none focus:ring-2 focus:ring-green-400 outline-none"
+              className="px-4 py-2 h-24 border rounded-lg resize-none focus:ring-2 focus:ring-green-400 outline-none"
             />
           )}
 
@@ -76,6 +95,18 @@ const Todo = () => {
         {/* list */}
         <TodoCards todos={todos} onEdit={editTodo} onDelete={deleteTodo} />
       </div>
+
+      {/* Toasts */}
+      <ToastContainer position="top-center" autoClose={2000} />
+
+      {/* Modal */}
+      {modalOpen && (
+        <Update
+          initialData={todos[editingIdx]}
+          onSave={handleModalSave}
+          onClose={() => setModalOpen(false)}
+        />
+      )}
     </div>
   );
 };
