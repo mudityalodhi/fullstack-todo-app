@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Home from "./components/Home";
@@ -9,6 +9,10 @@ import SignUp from "./components/SignUp";
 import SignIn from "./components/SignIn";
 
 const App = () => {
+  useEffect(() => {
+    console.log(localStorage.getItem("user"));
+  }, []);
+
   return (
     <Router>
       <Navbar />

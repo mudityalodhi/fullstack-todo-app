@@ -1,10 +1,12 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const SignUp = () => {
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     username: "",
     email: "",
@@ -23,24 +25,42 @@ const SignUp = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!formData.username || !formData.email || !formData.password) {
+    const { username, email, password } = formData;
+
+    if (!username.trim() || !email.trim() || !password.trim()) {
       toast.warn("All fields are required");
+      return;
+    }
+
+    if (password.length < 6) {
+      toast.warn("Password must be at least 6 characters");
       return;
     }
 
     try {
       setLoading(true);
+
       const res = await axios.post(
         "http://localhost:1000/api/users/register",
-        formData
+        {
+          username: username.trim(),
+          email: email.trim(),
+          password,
+        }
       );
+
       toast.success("Account created successfully!");
-      console.log("Response:", res.data);
-      setFormData({ username: "", email: "", password: "" });
+
+      setTimeout(() => {
+        navigate("/login");
+      }, 1500);
     } catch (error) {
-      toast.error(error.response?.data?.message || "Something went wrong");
+      const msg =
+        error.response?.data?.message || "Something went wrong. Try again.";
+      toast.error(msg);
     } finally {
       setLoading(false);
+      setFormData({ username: "", email: "", password: "" });
     }
   };
 
@@ -69,9 +89,7 @@ const SignUp = () => {
 
           {/* Email */}
           <div>
-            <label className="block text-gray-700 font-medium mb-1">
-              Email
-            </label>
+            <label className="block text-gray-700 font-medium mb-1">Email</label>
             <input
               type="email"
               name="email"
@@ -97,7 +115,6 @@ const SignUp = () => {
             />
           </div>
 
-          {/* Submit Button */}
           <button
             type="submit"
             disabled={loading}
@@ -107,7 +124,6 @@ const SignUp = () => {
           </button>
         </form>
 
-        {/* Already signed in? */}
         <p className="text-center text-gray-600 mt-6 text-sm">
           Already have an account?{" "}
           <Link
@@ -119,7 +135,6 @@ const SignUp = () => {
         </p>
       </div>
 
-      {/* Toast for notifications */}
       <ToastContainer position="top-center" autoClose={2000} />
     </div>
   );

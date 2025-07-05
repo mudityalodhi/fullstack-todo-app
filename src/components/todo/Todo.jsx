@@ -6,10 +6,13 @@ import "react-toastify/dist/ReactToastify.css";
 
 const Todo = () => {
   const [inputs, setInputs] = useState({ title: "", body: "" });
-  const [todos, setTodos]   = useState([]);
+  const [todos, setTodos] = useState([]);
   const [showBody, setShowBody] = useState(false);
   const [editingIdx, setEditingIdx] = useState(null); // null ⇒ add‑mode
-  const [modalOpen, setModalOpen]   = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
+
+  // check login status
+  const isLoggedIn = !!localStorage.getItem("user");
 
   /*---------------- handlers ----------------*/
   const handleChange = (e) => {
@@ -24,11 +27,12 @@ const Todo = () => {
     }
 
     if (editingIdx === null) {
-      setTodos((p) => [...p, inputs]);         // add
+      setTodos((p) => [...p, inputs]); // add
       toast.success("Task added!");
-      toast.info("Note: This task isn't saved permanently. Sign Up to keep your tasks!");
+      if (!isLoggedIn) {
+        toast.info("Note: This task isn't saved permanently. Sign Up to keep your tasks!");
+      }
     } else {
-      // (should never reach here in normal flow, updates are via modal)
       setTodos((p) =>
         p.map((t, i) => (i === editingIdx ? inputs : t))
       );
@@ -57,7 +61,6 @@ const Todo = () => {
     toast.error("Task deleted!");
   };
 
-  /*---------------- UI ----------------*/
   return (
     <div className="min-h-screen bg-green-50 flex items-center justify-center px-4">
       <div className="bg-white w-full max-w-xl rounded-xl shadow-lg p-6">
@@ -96,7 +99,6 @@ const Todo = () => {
         <TodoCards todos={todos} onEdit={editTodo} onDelete={deleteTodo} />
       </div>
 
-      {/* Toasts */}
       <ToastContainer position="top-center" autoClose={2000} />
 
       {/* Modal */}

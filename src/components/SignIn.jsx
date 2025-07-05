@@ -3,15 +3,18 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useDispatch } from "react-redux";
+import { setUser } from "../store/authSlice";
 
 const SignIn = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
 
-  // Input change handler
   const handleChange = (e) => {
     setFormData((prev) => ({
       ...prev,
@@ -19,7 +22,6 @@ const SignIn = () => {
     }));
   };
 
-  // Submit handler
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -38,12 +40,12 @@ const SignIn = () => {
 
       toast.success("Login successful!");
 
-      // optional: store user token or info
-      // localStorage.setItem("token", res.data.token);
-      // localStorage.setItem("user", JSON.stringify(res.data.user));
+      dispatch(setUser(res.data.user)); // <- Add this
+      localStorage.setItem("user", JSON.stringify(res.data.user));
 
+      // 3. Redirect
       setTimeout(() => {
-        navigate("/todo"); // redirect after login
+        navigate("/todo");
       }, 1500);
     } catch (err) {
       console.log(err);
